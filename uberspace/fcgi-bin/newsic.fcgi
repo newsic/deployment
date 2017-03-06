@@ -10,6 +10,9 @@ class ScriptNameStripper(object):
        self.app = app
 
    def __call__(self, environ, start_response):
+
+   	   # when the script should be available in a subfolder (instead of the root of the domain), please set the subfolder here
+   	   # keep it blank otherwise
        environ['SCRIPT_NAME'] = ''
        return self.app(environ, start_response)
 
