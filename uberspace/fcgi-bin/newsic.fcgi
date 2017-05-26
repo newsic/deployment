@@ -1,22 +1,24 @@
-#!/usr/bin/env python3.4
+#!/usr/bin/env python3.6
 
+RELATIVE_WEB_URL_PATH = '/'
 import sys
 sys.path.insert(0, "/home/<user>/virtual/<url>/")
-from flup.server.fcgi import WSGIServer
+
+from flipflop import WSGIServer
 from newsic import app
 
-class ScriptNameStripper(object):
-	def __init__(self, app):
-		self.app = app
+class ScriptNamePatch(object):
+  def __init__(self, app):
+    self.app = app
+  def __call__(self, environ, start_response):
 
-	def __call__(self, environ, start_response):
-		# when the script should be available in a subfolder (instead of the root of the domain), please set the subfolder here
-		# keep it blank otherwise
+    # when the script should be available in a subfolder (instead of the root of the$
+    # keep it blank otherwise
+    environ['SCRIPT_NAME'] = ''
+    return self.app(environ, start_response)
 
-		environ['SCRIPT_NAME'] = ''
-		return self.app(environ, start_response)
-
-app = ScriptNameStripper(app)
+app = ScriptNamePatch(app)
 
 if __name__ == '__main__':
-	WSGIServer(app).run()
+  WSGIServer(app).run()
+
